@@ -1,0 +1,13 @@
+{
+  "channel": {"channel_id": "UC2HNqPgeKtVr2gZmLeeIk3g", "title": "Nick's Kitchen", "handle": "@NicksKitchen",
+              "subscribers": 1000000, "video_count": 5},
+  "long": [
+    {"id": "K_SXQoMdSf4", "title": "How France Perfected Beef Stew"},
+    {"id": "MEMBERS0001", "title": "Members only special"},
+    {"id": "cM5IAypOOfM", "title": "Every Way To Use Chocolate"},
+    {"id": "LexQiGdPlxU", "title": "ซุปกระดูกหมูใส"}
+  ],
+  "short": [
+    {"id": "wrZZf2ER3ak", "title": "How To Chop Chives"}
+  ]
+}
