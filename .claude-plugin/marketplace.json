@@ -1,0 +1,7 @@
+{
+  "name": "brain-sucker-local",
+  "owner": { "name": "Jiradech" },
+  "plugins": [
+    { "name": "brain-sucker", "source": "./plugins/brain-sucker" }
+  ]
+}
