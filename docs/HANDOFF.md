@@ -54,3 +54,8 @@
 - Q2 IG/TikTok → Whisper ทุกคลิป + auto-detect ภาษา ✔ · ผู้ใช้ถามต่อ: ถ้าซับ YouTube ห่วย Claude รับมือยังไง → รอบ 3
 - Q3 mini = skill ตัวที่สองใน plugin `brain-sucker` + คำสั่ง `brainsuck clip <url...>` ✔
 - Q4 skill ชื่อ `mini-brain` → `/mini-brain <url...>` หรือ `/mini-brain <คำถาม>` ✔
+
+### Grill รอบ 3 — คำตอบ → grilling เสร็จ
+- Q5 ✔ mini = Whisper ทุกคลิป · ระบบหลัก v1.1: quality gate ตอนดึง + summarizer ตั้ง `transcript_quality: poor` → ถอดใหม่ · ตอนตอบบอกตรงๆ ถ้าช่วงที่อ้างถอดไม่ชัด
+- Q1 ✔ IG ล็อกอิน: Claude ถาม ใช่/ไม่/ใช่ทุกครั้ง (ไม่ถามรหัส) → cookies จาก browser → ไม่ได้ใช้ NexLev → ไม่ได้ข้าม
+- **Design doc: `docs/superpowers/specs/2026-11-08-mini-brain-design.md`** — ขั้นถัดไป: builder check → ผู้ใช้อนุมัติ → prototype 4 ข้อท้าย doc → writing-plans
