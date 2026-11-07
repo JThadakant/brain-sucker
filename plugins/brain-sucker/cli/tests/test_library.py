@@ -108,3 +108,12 @@ def test_status_pending_and_unnamed(lib, clip):
     assert s["pending"] == [str(p.resolve())]
     assert s["unnamed"] == ["youtube_3xU050kMbHM"]
     assert s["config"] == {"ig_cookies": "ask", "browser": None}
+
+
+def test_status_reports_stale_copies(lib, clip, tmp_path):
+    advisor = tmp_path / "ที่ปรึกษา"
+    advisor.mkdir()
+    path = lib.write(done(clip(copied_to=[str(advisor)]), "Launch"))
+    assert library_status(lib)["stale_copies"] == []
+    path.write_text(path.read_text(encoding="utf-8").replace("สรุป", "สรุปใหม่หลัง refresh"), encoding="utf-8")
+    assert library_status(lib)["stale_copies"] == ["youtube_3xU050kMbHM"]

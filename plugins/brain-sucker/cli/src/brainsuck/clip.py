@@ -64,6 +64,14 @@ def _merge(old: list[str], new: list[str]) -> list[str]:
     return old + [p for p in new if p not in old]
 
 
+def _attach(library: ClipLibrary, old: VideoRecord, targets: list[str]) -> Path:
+    """An already-stored Clip: rewrite it only when --to adds an Advisor, so hand edits to the file survive."""
+    merged = _merge(old.copied_to, targets)
+    if merged == old.copied_to:
+        return library.path_of(f"{old.platform}_{old.id}")
+    return library.write(replace(old, copied_to=merged))
+
+
 def _fetch_info(source: ClipSource, url: str, key: ClipKey | None, browsers: list[str]) -> tuple[ClipInfo, str | None]:
     """Without cookies first; Instagram that needs a login then tries each browser's cookies in order."""
     try:
@@ -138,13 +146,12 @@ def clip(urls: list[str], library: ClipLibrary, *, source: ClipSource, make_tran
         try:
             old = library.read(key.key) if key else None
             if old and not refresh:
-                done("existing", i, library.write(replace(old, copied_to=_merge(old.copied_to, targets))), key.key)
+                done("existing", i, _attach(library, old, targets), key.key)
                 continue
             info, cookies = _fetch_info(source, url, key, _browsers(ig_cookies, config))
             old = old or library.read(info.key.key)
             if old and not refresh:
-                done("existing", i, library.write(replace(old, copied_to=_merge(old.copied_to, targets))),
-                     info.key.key)
+                done("existing", i, _attach(library, old, targets), info.key.key)
                 continue
             work = cache_dir / "work" / info.key.key
             try:
@@ -172,7 +179,7 @@ def clip(urls: list[str], library: ClipLibrary, *, source: ClipSource, make_tran
             blocked = True
             emit({"event": "blocked", "message": str(e)})
             break
-        except YouTubeError as e:
+        except Exception as e:  # YouTubeError or anything one odd video throws (ffmpeg, Whisper, PyAV): skip it only
             counts["skipped"] += 1
             emit({"event": "skipped", "url": url, "reason": f"error: {str(e)[:200]}"})
     result = ClipResult(blocked=blocked, **counts)

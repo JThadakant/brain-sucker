@@ -44,6 +44,8 @@ If any `needs-login` events arrived, ask **once for the whole batch** with AskUs
 
 A proposed name is in the user's language, at most 60 characters, and states the Clip's core takeaway (not its clickbait title). The user answers `ok` or corrects some rows; then run `brainsuck clip-name <key> "<name>"` for every Clip. This also writes the copies for `--to`.
 
+Finally, `brainsuck clip-status` → for every key in `stale_copies` (a refreshed Clip re-summarized in place, whose Advisor copy is now out of date), run `brainsuck clip-name <key> "<its current display_name>"` to rewrite the copies.
+
 ### 5. Load into this chat
 
 For every Clip in this batch (new, refreshed and existing), read the record file: front-matter, `## Summary` and `## Screen Text` always; the whole `## Transcript` only when `duration` ≤ 1800 seconds. For longer Clips, grep their transcript for the user's later questions instead.

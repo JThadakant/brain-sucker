@@ -227,3 +227,28 @@ def test_import_text_creates_record(env):
     assert r.transcript_lines == ["[00:00] ย่อหน้า1", "[00:00] ย่อหน้า2"]
     assert r.transcript_source == "nexlev-description"
     assert (r.lang, r.kind, r.summary_status, r.platform) == ("th", "short", "pending", "instagram")
+
+
+class _CrashOn(FakeTranscriber):
+    def transcribe_clip(self, audio, lang, prompt):
+        if audio.name == f"{TT_KEY}.audio.m4a":
+            raise ValueError("'en-US' is not a valid language code")
+        return super().transcribe_clip(audio, lang, prompt)
+
+
+def test_unexpected_error_skips_clip_not_batch(env):
+    lib, _, _, _, events, run = env
+    result = run([TIKTOK, YOUTUBE], transcriber=_CrashOn())
+    assert of(events, "skipped")[0]["reason"].startswith("error:")
+    assert (result.new, result.skipped) == (1, 1)
+    assert events[-1]["event"] == "done"
+
+
+def test_repaste_keeps_hand_edits(env):
+    lib, _, _, _, _, run = env
+    run([TIKTOK])
+    path = lib.path_of(TT_KEY)
+    notes = "\n## My notes\nโน้ตของฉัน\n"
+    path.write_text(path.read_text(encoding="utf-8") + notes, encoding="utf-8")
+    run([TIKTOK])
+    assert "โน้ตของฉัน" in path.read_text(encoding="utf-8")

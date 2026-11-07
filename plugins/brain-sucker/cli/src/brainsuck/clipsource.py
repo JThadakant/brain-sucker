@@ -43,7 +43,7 @@ class NeedsLogin(YouTubeError):
 _YT_ID = re.compile(r"^[A-Za-z0-9_-]{11}$")
 _YT_PATH = re.compile(r"^/(?:shorts|live|embed)/([A-Za-z0-9_-]{11})")
 _TIKTOK = re.compile(r"^/@[^/]+/video/(\d+)")
-_INSTAGRAM = re.compile(r"^/(?:reels?|p|tv)/([A-Za-z0-9_-]+)")
+_INSTAGRAM = re.compile(r"^/(?:[^/]+/)?(?:reels?|p|tv)/([A-Za-z0-9_-]+)")
 
 
 def parse_clip_url(url: str) -> ClipKey | None:
@@ -71,12 +71,11 @@ _PLATFORMS: dict[str, Platform] = {"Youtube": "youtube", "TikTok": "tiktok", "In
 
 
 def _youtube_lang(d: dict) -> str | None:
-    if d.get("language"):
-        return d["language"]
-    for k in d.get("automatic_captions") or {}:
-        if k.endswith("-orig"):
-            return k[: -len("-orig")]
-    return None
+    """Base language code ("en-US" → "en"): Whisper rejects regional codes."""
+    lang = d.get("language")
+    if not lang:
+        lang = next((k[: -len("-orig")] for k in d.get("automatic_captions") or {} if k.endswith("-orig")), None)
+    return lang.split("-")[0].lower() if lang else None
 
 
 def clip_info_from_ytdlp(d: dict) -> ClipInfo:
@@ -118,17 +117,21 @@ class ClipSource(Protocol):
 class YtDlpClipSource:
     """`cookies` names a browser whose cookies yt-dlp reads; callers pass it for Instagram only."""
 
-    def _run(self, url: str, cookies: str | None, download: bool = False, **extra) -> tuple[dict, str | None]:
-        import yt_dlp
-
-        opts = {"quiet": True, "no_warnings": True, "noprogress": True, "js_runtimes": {"node": {}},
-                "ffmpeg_location": str(find_ffmpeg().parent)}
+    def _opts(self, cookies: str | None, **extra) -> dict:
+        """noplaylist: a pasted `watch?v=X&list=PL…` URL means video X, never the whole playlist."""
+        opts = {"quiet": True, "no_warnings": True, "noprogress": True, "noplaylist": True,
+                "js_runtimes": {"node": {}}, "ffmpeg_location": str(find_ffmpeg().parent)}
         if cookies:
             opts["cookiesfrombrowser"] = (cookies,)
         opts.update(extra)
+        return opts
+
+    def _run(self, url: str, cookies: str | None, download: bool = False, **extra) -> tuple[dict, str | None]:
+        import yt_dlp
+
         key = parse_clip_url(url)
         try:
-            with yt_dlp.YoutubeDL(opts) as y:
+            with yt_dlp.YoutubeDL(self._opts(cookies, **extra)) as y:
                 d = y.extract_info(url, download=download)
                 return d, (y.prepare_filename(d) if download else None)
         except yt_dlp.utils.DownloadError as e:

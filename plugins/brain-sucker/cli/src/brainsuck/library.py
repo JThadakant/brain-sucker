@@ -102,9 +102,22 @@ def _write_copy(clips_dir: Path, key: str, name: str, text: str) -> None:
     atomic_write(clips_dir / name, text)
 
 
+def _stale(path: Path, r: VideoRecord) -> bool:
+    """A done, named Clip whose Advisor copy is missing or differs (e.g. re-summarized in place after --refresh)."""
+    if r.summary_status != "done" or not r.display_name:
+        return False
+    text = path.read_text(encoding="utf-8")
+    for advisor in map(Path, r.copied_to):
+        copy = advisor / "clips" / path.name
+        if advisor.is_dir() and (not copy.exists() or copy.read_text(encoding="utf-8") != text):
+            return True
+    return False
+
+
 def library_status(lib: ClipLibrary) -> dict:
     records = list(lib.iter_records())
     return {
+        "stale_copies": [clip_key_of(r) for p, r in records if _stale(p, r)],
         "library": str(lib.root.resolve()),
         "config": asdict(lib.load_config()),
         "clips": len(records),

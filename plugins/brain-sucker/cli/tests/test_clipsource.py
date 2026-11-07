@@ -29,7 +29,7 @@ def test_parse_tiktok():
 
 def test_parse_instagram():
     for url in ["https://www.instagram.com/reels/DejxHqIpgBG/", "https://www.instagram.com/reel/DejxHqIpgBG/?igsh=x",
-                "https://www.instagram.com/p/DejxHqIpgBG/"]:
+                "https://www.instagram.com/p/DejxHqIpgBG/", "https://www.instagram.com/colofill/reel/DejxHqIpgBG/"]:
         assert parse_clip_url(url) == ClipKey("instagram", "DejxHqIpgBG"), url
 
 
@@ -63,6 +63,19 @@ def test_info_youtube_lang_and_kind():
     assert info.lang == "en"
     assert info.kind == "long"
     assert info.duration == 1190
+
+
+def test_info_youtube_regional_lang_normalized():
+    d = fixture("youtube_3xU050kMbHM")
+    d["language"] = "en-US"
+    assert clip_info_from_ytdlp(d).lang == "en"
+
+
+def test_ytdlp_opts_never_playlist():
+    opts = YtDlpClipSource()._opts(None)
+    assert opts["noplaylist"] is True
+    assert "cookiesfrombrowser" not in opts
+    assert YtDlpClipSource()._opts("edge")["cookiesfrombrowser"] == ("edge",)
 
 
 def test_info_unsupported_extractor():
