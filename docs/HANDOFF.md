@@ -69,5 +69,5 @@
 ## 3. Mini Brain — กำลัง implement (2026-11-08)
 - worktree `C:\Users\Lenovo\OneDrive\Desktop\brain-sucker-mini` branch `feat/mini` · ledger `.superpowers/sdd/2026-11-08-mini-brain/progress.md` (ใน worktree) — Task 1–7 `complete` (138 tests), Task 8 E2E ทำไปบางส่วน
 - เทส: `cd plugins/brain-sucker/cli && /c/brain-sucker-cache/venv-dev-mini/Scripts/python -W error -m pytest -q` · รันจริงต้องตั้ง `BRAINSUCK_CACHE=C:/brain-sucker-cache/mini`
-- `claude -p` ใช้ไม่ได้ (401 OAuth) → ผู้ใช้ต้อง login CLI ใหม่ก่อนทดสอบ skill ใน session ใหม่
-- เหลือ: Task 8 ข้อ 1 (สรุป IG + ตั้งชื่อ) ถึงข้อ 6 (final review + finishing branch)
+- E2E ผ่านครบ → `docs/research/0004-mini-e2e.md` · ทดสอบด้วย `claude --plugin-dir <worktree>/plugins/brain-sucker` + prepend `<worktree>/plugins/brain-sucker/bin` เข้า PATH (ไม่งั้นได้ brainsuck 0.1.0 ของ plugin ที่ติดตั้ง)
+- เหลือ: final review + finishing branch · หลัง merge ต้อง update plugin `brain-sucker` ที่ติดตั้งให้เป็น 0.2.0
