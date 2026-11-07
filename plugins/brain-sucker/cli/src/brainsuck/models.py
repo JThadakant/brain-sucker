@@ -3,13 +3,15 @@ from datetime import date
 from typing import Literal
 
 Kind = Literal["long", "short"]
-TranscriptSource = Literal["youtube-manual", "youtube-auto", "whisper-large-v3"]
+Platform = Literal["youtube", "instagram", "tiktok"]
+TranscriptSource = Literal["youtube-manual", "youtube-auto", "whisper-large-v3", "nexlev-description"]
 
 
 @dataclass(frozen=True)
 class Segment:
     start: float
     text: str
+    low_conf: bool = False
 
 
 @dataclass(frozen=True)
@@ -52,3 +54,8 @@ class VideoRecord:
     description: str
     transcript_lines: list[str]
     screen_text_lines: list[str] = field(default_factory=list)
+    platform: Platform | None = None
+    display_name: str | None = None
+    creator: str | None = None
+    transcript_quality: float | None = None
+    copied_to: list[str] = field(default_factory=list)
