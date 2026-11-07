@@ -5,6 +5,8 @@ from brainsuck.models import Segment, TranscriptSource
 
 _NOISE = re.compile(r"\[(?:music|applause|laughter)\]|>>", re.IGNORECASE)
 WHISPER: TranscriptSource = "whisper-large-v3"
+UNCLEAR = " ⟨ถอดไม่ชัด⟩"
+UNCLEAR_LOGPROB = -1.0
 
 
 def detect_lang(info_json: dict) -> str:
@@ -44,9 +46,29 @@ def _stamp(seconds: float) -> str:
 
 
 def format_lines(segments: list[Segment], window: float = 30.0) -> list[str]:
-    lines: list[tuple[float, list[str]]] = []
+    """[mm:ss] lines, one per `window` seconds; a line with any low-confidence segment ends with UNCLEAR."""
+    lines: list[tuple[float, list[str], list[bool]]] = []
     for seg in segments:
         if not lines or seg.start - lines[-1][0] >= window:
-            lines.append((seg.start, []))
+            lines.append((seg.start, [], []))
         lines[-1][1].append(seg.text.strip())
-    return [f"{_stamp(start)} {' '.join(texts)}" for start, texts in lines]
+        lines[-1][2].append(seg.low_conf)
+    return [f"{_stamp(start)} {' '.join(texts)}{UNCLEAR if any(low) else ''}" for start, texts, low in lines]
+
+
+def transcript_quality(lines: list[str]) -> float:
+    """Share of transcript lines marked UNCLEAR."""
+    if not lines:
+        return 0.0
+    return round(sum(l.endswith(UNCLEAR) for l in lines) / len(lines), 2)
+
+
+_URL = re.compile(r"https?://\S+")
+_HASHTAG = re.compile(r"#\S+")
+
+
+def whisper_prompt(title: str, creator: str, description: str, limit: int = 300) -> str:
+    """Whisper initial_prompt: names and terms the clip is likely to say, so Whisper spells them right."""
+    desc = _HASHTAG.sub(" ", _URL.sub(" ", description))
+    parts = [" ".join(p.split()) for p in (title, creator, desc)]
+    return ". ".join(p for p in parts if p)[:limit]

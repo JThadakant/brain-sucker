@@ -62,10 +62,25 @@ class FixtureYouTube:
 
 
 class FakeTranscriber:
-    def __init__(self, text_by_file: dict[str, str] | None = None):
+    def __init__(self, text_by_file: dict[str, str] | None = None, detected: str = "en",
+                 low_conf_files: set[str] = frozenset(), empty_files: set[str] = frozenset()):
         self.text_by_file = text_by_file or {}
+        self.detected = detected
+        self.low_conf_files = set(low_conf_files)
+        self.empty_files = set(empty_files)
         self.calls = 0
+        self.last_prompt: str | None = None
+        self.last_lang: str | None = None
 
     def transcribe(self, audio: Path, lang: str) -> list[Segment]:
         self.calls += 1
         return [Segment(0.0, self.text_by_file.get(audio.name, f"ถอดเสียง {audio.stem} ({lang})"))]
+
+    def transcribe_clip(self, audio: Path, lang: str | None, prompt: str) -> tuple[list[Segment], str]:
+        """Two segments (0 s and 40 s → two transcript lines); the second is low-confidence for low_conf_files."""
+        self.calls += 1
+        self.last_prompt, self.last_lang = prompt, lang
+        if audio.name in self.empty_files:
+            return [], lang or self.detected
+        return [Segment(0.0, f"ถอดเสียง {audio.stem}"),
+                Segment(40.0, "ช่วงที่สอง", audio.name in self.low_conf_files)], lang or self.detected
