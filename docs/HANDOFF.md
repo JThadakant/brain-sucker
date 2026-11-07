@@ -48,3 +48,9 @@
 - Q7 `--to "<Advisor>"` → copy เข้า `<Advisor>/clips/` (แยกจาก channels/) + แก้ skill advisor ให้อ่าน clips/
 - Q8 **รับ YouTube + Instagram + TikTok** (เปลี่ยนจากคำแนะนำ) → เปิดคำถามเรื่อง IG/TikTok login, ภาษา (Whisper auto-detect)
 - Q9 ยังไม่ทำ synthesis ระดับคลัง
+
+### Grill รอบ 2 — คำตอบ
+- Q1 IG ล็อกอิน: ผู้ใช้ถามว่า "ใครถาม ถามอะไร" → อธิบายแล้ว (ดูรอบ 3) ยังไม่ปิด
+- Q2 IG/TikTok → Whisper ทุกคลิป + auto-detect ภาษา ✔ · ผู้ใช้ถามต่อ: ถ้าซับ YouTube ห่วย Claude รับมือยังไง → รอบ 3
+- Q3 mini = skill ตัวที่สองใน plugin `brain-sucker` + คำสั่ง `brainsuck clip <url...>` ✔
+- Q4 skill ชื่อ `mini-brain` → `/mini-brain <url...>` หรือ `/mini-brain <คำถาม>` ✔
