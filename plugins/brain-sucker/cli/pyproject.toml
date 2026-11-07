@@ -32,3 +32,6 @@ markers = [
   "gpu: needs CUDA + Whisper model (run with -m gpu)",
 ]
 addopts = "-m 'not network and not gpu'"
+
+[tool.setuptools.package-data]
+brainsuck = ["templates/*.md"]
