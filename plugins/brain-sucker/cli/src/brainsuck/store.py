@@ -73,7 +73,7 @@ class ChannelStore:
         records = sorted(self.iter_records(), key=lambda r: r.published, reverse=True)
         lines = ["# Index", "", "| วันที่ | ประเภท | ชื่อ | สรุปแล้ว | ไฟล์ |", "|---|---|---|---|---|"]
         for r in records:
-            title = r.title.replace(r"|")|", "\|") + (" (ลบแล้ว)" if r.status == "removed" else "")
+            title = r.title.replace("|", r"\|") + (" (ลบแล้ว)" if r.status == "removed" else "")
             done = "✓" if r.summary_status == "done" else ""
             lines.append(f"| {r.published.isoformat()} | {r.kind} | {title} | {done} | "
                          f"[{record_filename(r)}](videos/{record_filename(r)}) |")
