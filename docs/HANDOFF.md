@@ -65,3 +65,9 @@
 - ✅ ผู้ใช้อนุมัติ mini design (2026-11-08) → กำลังทำ prototype 4 ข้อ (ผล: docs/research/0003-mini-prototype.md)
 - ✅ prototype mini เสร็จ → docs/research/0003-mini-prototype.md (TikTok/IG ไม่ต้องล็อกอิน, 360p อ่านสไลด์ได้, Whisper 17× realtime, ต้องใส่ initial_prompt กันชื่อเฉพาะเพี้ยน) · ขั้นถัดไป: writing-plans สำหรับ mini
 - ✅ แผน mini เขียนแล้ว → `docs/superpowers/plans/2026-11-08-mini-brain.md` (8 tasks, ทำใน worktree `../brain-sucker-mini` branch `feat/mini` แตกจาก `feat/v1`) · ขั้นถัดไป: ผู้ใช้ review แผน + เลือกวิธี execute (Subagent-driven / Native)
+
+## 3. Mini Brain — กำลัง implement (2026-11-08)
+- worktree `C:\Users\Lenovo\OneDrive\Desktop\brain-sucker-mini` branch `feat/mini` · ledger `.superpowers/sdd/2026-11-08-mini-brain/progress.md` (ใน worktree) — Task 1–7 `complete` (138 tests), Task 8 E2E ทำไปบางส่วน
+- เทส: `cd plugins/brain-sucker/cli && /c/brain-sucker-cache/venv-dev-mini/Scripts/python -W error -m pytest -q` · รันจริงต้องตั้ง `BRAINSUCK_CACHE=C:/brain-sucker-cache/mini`
+- `claude -p` ใช้ไม่ได้ (401 OAuth) → ผู้ใช้ต้อง login CLI ใหม่ก่อนทดสอบ skill ใน session ใหม่
+- เหลือ: Task 8 ข้อ 1 (สรุป IG + ตั้งชื่อ) ถึงข้อ 6 (final review + finishing branch)
