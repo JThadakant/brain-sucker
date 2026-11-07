@@ -62,3 +62,5 @@
 
 - Builder check เสร็จ: ตัดสินเอง 4 ข้อ (ใส่ใน design doc หัวข้อ "การตัดสินของผู้ออกแบบหลัง builder check") · **รอผู้ใช้ตอบ 2 ข้อ**: (A) งาน v1.1 quality gate ของระบบหลักอยู่ในแผนเดียวกับ mini หรือแยก (แนะนำ: แยก ทำหลัง v1 Task 12) (B) คลิปยาว 1–3 ชม. โหลดอะไรเข้าแชท (แนะนำ: สรุป+ภาพเสมอ, transcript เต็มเฉพาะคลิป ≤30 นาที, ที่เหลือ grep ตามคำถาม)
 - QA ✔ แยกแผน · QB ✔ (สรุป+ภาพเสมอ, transcript เต็มเฉพาะ ≤30 นาที) → design doc รอผู้ใช้อนุมัติ
+- ✅ ผู้ใช้อนุมัติ mini design (2026-11-08) → กำลังทำ prototype 4 ข้อ (ผล: docs/research/0003-mini-prototype.md)
+- ✅ prototype mini เสร็จ → docs/research/0003-mini-prototype.md (TikTok/IG ไม่ต้องล็อกอิน, 360p อ่านสไลด์ได้, Whisper 17× realtime, ต้องใส่ initial_prompt กันชื่อเฉพาะเพี้ยน) · ขั้นถัดไป: writing-plans สำหรับ mini
