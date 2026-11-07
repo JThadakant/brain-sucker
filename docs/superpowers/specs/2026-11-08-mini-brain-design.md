@@ -54,6 +54,12 @@ Desktop\mini-brain\
 - YouTube seam ขยายเป็นรับ URL ทั่วไปของ yt-dlp (`fetch_info(url)`) — adapter เดิมยังใช้ได้
 - ลำดับใน skill: `brainsuck clip` → summarizer (batch ≤5, ดูภาพ) → เสนอชื่อ (ตาราง) → `brainsuck clip-name` → อ่าน record ทั้งหมดเข้าแชท → พร้อมคุย
 
+## การตัดสินของผู้ออกแบบหลัง builder check (ผู้ใช้ตรวจได้)
+- **`--to` copy เมื่อไร:** copy หลังขั้นตั้งชื่อ (`brainsuck clip-name` เป็นคนทำ) จึงได้ record ที่สรุปแล้วและมีชื่อ · `--refresh`/เปลี่ยนชื่อ → อัปเดต copy ใน `<Advisor>/clips/` ด้วย (คลังเก็บว่า copy ไปไหนบ้าง) · v1: `advisor.md`, `status`, รายชื่อใน CLAUDE.md **ไม่นับ** clips — มีแค่ skill `advisor` ที่ค้น `clips/`
+- **ถอดไม่ชัดรายบรรทัด:** เก็บ `avg_logprob` ของแต่ละ segment จาก Whisper · บรรทัดที่ต่ำกว่าเกณฑ์ต่อท้าย ` ⟨ถอดไม่ชัด⟩` (หัวบรรทัด `[mm:ss]` เหมือนเดิม จึงไม่กระทบ record เก่า) · `transcript_quality` ระดับคลิป = สัดส่วนบรรทัดที่ไม่ชัด
+- **NexLev fallback:** Claude เรียก MCP แล้วส่งข้อความให้ `brainsuck clip-import` สร้าง record (ชื่อไฟล์/index สม่ำเสมอ) · ถามผู้ใช้ครั้งเดียวต่อชุดก่อนใช้เครดิต ("ใช้เครดิต NexLev กับ N คลิปไหม")
+- **ถาม IG ล็อกอินเมื่อไร:** หลังลองแบบไม่ล็อกอินแล้วล้มเท่านั้น · CLI ส่ง event `{"event":"needs-login","id":…}` · skill ถามผู้ใช้ แล้วรันซ้ำด้วย `--ig-cookies <browser>`
+
 ## ปล่อยให้ผู้สร้างตัดสิน
 - รูปแบบ slug ชื่อไฟล์ (ไทยได้ ตัดอักขระต้องห้ามของ Windows)
 - จำนวนเฟรมสูงสุดต่อคลิป (เริ่ม 40 เหมือนระบบหลัก)

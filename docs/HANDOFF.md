@@ -59,3 +59,5 @@
 - Q5 ✔ mini = Whisper ทุกคลิป · ระบบหลัก v1.1: quality gate ตอนดึง + summarizer ตั้ง `transcript_quality: poor` → ถอดใหม่ · ตอนตอบบอกตรงๆ ถ้าช่วงที่อ้างถอดไม่ชัด
 - Q1 ✔ IG ล็อกอิน: Claude ถาม ใช่/ไม่/ใช่ทุกครั้ง (ไม่ถามรหัส) → cookies จาก browser → ไม่ได้ใช้ NexLev → ไม่ได้ข้าม
 - **Design doc: `docs/superpowers/specs/2026-11-08-mini-brain-design.md`** — ขั้นถัดไป: builder check → ผู้ใช้อนุมัติ → prototype 4 ข้อท้าย doc → writing-plans
+
+- Builder check เสร็จ: ตัดสินเอง 4 ข้อ (ใส่ใน design doc หัวข้อ "การตัดสินของผู้ออกแบบหลัง builder check") · **รอผู้ใช้ตอบ 2 ข้อ**: (A) งาน v1.1 quality gate ของระบบหลักอยู่ในแผนเดียวกับ mini หรือแยก (แนะนำ: แยก ทำหลัง v1 Task 12) (B) คลิปยาว 1–3 ชม. โหลดอะไรเข้าแชท (แนะนำ: สรุป+ภาพเสมอ, transcript เต็มเฉพาะคลิป ≤30 นาที, ที่เหลือ grep ตามคำถาม)
