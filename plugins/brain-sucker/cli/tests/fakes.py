@@ -1,10 +1,55 @@
-"""Test adapters for the YouTube and Transcriber seams."""
+"""Test adapters for the YouTube, ClipSource and Transcriber seams."""
 import json
 from pathlib import Path
 
+from brainsuck.clipsource import NeedsLogin, clip_info_from_ytdlp, parse_clip_url
 from brainsuck.models import Segment, VideoRef
 from brainsuck.transcript import parse_json3
-from brainsuck.youtube import Blocked, ChannelCandidate, info_from_ytdlp
+from brainsuck.youtube import Blocked, ChannelCandidate, Unavailable, info_from_ytdlp
+
+
+class FixtureClipSource:
+    """Serves tests/fixtures/clips/info/<clip key>.json. Sets name Clip Keys that misbehave:
+    `needs_login` raise NeedsLogin unless called with a browser in `cookie_ok`; `unavailable` and `blocked` raise."""
+
+    def __init__(self, root: Path, aliases: dict[str, str] | None = None, needs_login: set[str] = frozenset(),
+                 cookie_ok: set[str] = frozenset(), unavailable: set[str] = frozenset(),
+                 blocked: set[str] = frozenset()):
+        self.root = root
+        self.aliases = aliases or {}
+        self.needs_login, self.cookie_ok = set(needs_login), set(cookie_ok)
+        self.unavailable, self.blocked = set(unavailable), set(blocked)
+        self.info_calls: list[tuple[str, str | None]] = []
+
+    def _key(self, url: str) -> str:
+        k = parse_clip_url(url)
+        key = k.key if k else self.aliases.get(url)
+        if key is None or not (self.root / "info" / f"{key}.json").exists():
+            raise Unavailable("unsupported", url)
+        return key
+
+    def fetch_info(self, url, cookies=None):
+        self.info_calls.append((url, cookies))
+        key = self._key(url)
+        if key in self.blocked:
+            raise Blocked("HTTP Error 429")
+        if key in self.unavailable:
+            raise Unavailable("unavailable")
+        if key in self.needs_login and cookies not in self.cookie_ok:
+            raise NeedsLogin("login required")
+        return clip_info_from_ytdlp(json.loads((self.root / "info" / f"{key}.json").read_text(encoding="utf-8")))
+
+    def _fake_file(self, url, dest_dir, suffix):
+        dest_dir.mkdir(parents=True, exist_ok=True)
+        p = dest_dir / f"{self._key(url)}.{suffix}"
+        p.write_bytes(b"fake")
+        return p
+
+    def fetch_audio(self, url, dest_dir, cookies=None):
+        return self._fake_file(url, dest_dir, "audio.m4a")
+
+    def fetch_video_360p(self, url, dest_dir, cookies=None):
+        return self._fake_file(url, dest_dir, "v360.mp4")
 
 
 class FixtureYouTube:

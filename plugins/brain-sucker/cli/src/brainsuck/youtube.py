@@ -27,7 +27,7 @@ class Blocked(YouTubeError):
     """YouTube is rate-limiting or bot-checking us. Stop the run; retry later."""
 
 
-UnavailableReason = Literal["members-only", "age-restricted", "private", "live", "unavailable"]
+UnavailableReason = Literal["members-only", "age-restricted", "private", "live", "unavailable", "unsupported"]
 
 
 class Unavailable(YouTubeError):
