@@ -20,7 +20,7 @@ class ChannelState:
     skipped: dict[str, str]
 
 
-def _atomic_write(path: Path, text: str) -> None:
+def atomic_write(path: Path, text: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_name(path.name + ".tmp")
     tmp.write_text(text, encoding="utf-8", newline="\n")
@@ -45,7 +45,7 @@ class ChannelStore:
         return ChannelState(**d)
 
     def save_state(self, s: ChannelState) -> None:
-        _atomic_write(self.channel_dir / "state.json", json.dumps(asdict(s), ensure_ascii=False, indent=1))
+        atomic_write(self.channel_dir / "state.json", json.dumps(asdict(s), ensure_ascii=False, indent=1))
 
     def _paths(self) -> Iterator[Path]:
         if self.videos_dir.exists():
@@ -56,7 +56,7 @@ class ChannelStore:
         for old in self._paths():
             if _video_id(old) == r.id and old != path:
                 old.unlink()
-        _atomic_write(path, render_record(r))
+        atomic_write(path, render_record(r))
         return path
 
     def read_record(self, video_id: str) -> VideoRecord | None:
@@ -77,11 +77,11 @@ class ChannelStore:
             done = "✓" if r.summary_status == "done" else ""
             lines.append(f"| {r.published.isoformat()} | {r.kind} | {title} | {done} | "
                          f"[{record_filename(r)}](videos/{record_filename(r)}) |")
-        _atomic_write(self.channel_dir / "index.md", "\n".join(lines) + "\n")
+        atomic_write(self.channel_dir / "index.md", "\n".join(lines) + "\n")
 
     def write_skipped(self) -> None:
         s = self.load_state()
         lines = ["# Skipped Videos", "", "| id | เหตุผล | ลิงก์ |", "|---|---|---|"]
         for vid, reason in (s.skipped if s else {}).items():
             lines.append(f"| {vid} | {reason} | https://www.youtube.com/watch?v={vid} |")
-        _atomic_write(self.channel_dir / "skipped.md", "\n".join(lines) + "\n")
+        atomic_write(self.channel_dir / "skipped.md", "\n".join(lines) + "\n")
