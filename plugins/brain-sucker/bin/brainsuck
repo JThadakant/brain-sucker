@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# Runs the brainsuck CLI from its own venv at $BRAINSUCK_CACHE/venv (default C:\brain-sucker-cache\venv).
+# First run, or after cli/pyproject.toml changes, (re)installs the package — this can take several minutes.
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+CACHE="${BRAINSUCK_CACHE:-/c/brain-sucker-cache}"
+VENV="$CACHE/venv"
+PY="$VENV/Scripts/python.exe"
+[ -x "$PY" ] || PY="$VENV/bin/python"
+STAMP="$VENV/.stamp"
+native() { cygpath -w "$1" 2>/dev/null || echo "$1"; }  # Windows Python can't read MSYS /c/... paths
+WANT="$(sha1sum "$ROOT/cli/pyproject.toml" | cut -d' ' -f1)"
+
+if [ ! -x "$PY" ] || [ "$(cat "$STAMP" 2>/dev/null)" != "$WANT" ]; then
+  echo '{"event": "setup", "message": "installing brainsuck into '"$VENV"' (first run takes a few minutes)"}' >&2
+  mkdir -p "$CACHE"
+  [ -x "$PY" ] || python -m venv "$(native "$VENV")"
+  [ -x "$VENV/Scripts/python.exe" ] && PY="$VENV/Scripts/python.exe" || PY="$VENV/bin/python"
+  "$PY" -m pip install -q -U pip >&2
+  "$PY" -m pip install -q -e "$(native "$ROOT/cli")[asr]" >&2
+  echo "$WANT" > "$STAMP"
+fi
+
+export PYTHONIOENCODING=utf-8
+exec "$PY" -m brainsuck "$@"
