@@ -4,10 +4,12 @@ from pathlib import Path
 from typing import Protocol
 
 from brainsuck.models import Segment
+from brainsuck.transcript import UNCLEAR_LOGPROB
 
 
 class Transcriber(Protocol):
     def transcribe(self, audio: Path, lang: str) -> list[Segment]: ...
+    def transcribe_clip(self, audio: Path, lang: str | None, prompt: str) -> tuple[list[Segment], str]: ...
 
 
 def _add_cublas_dlls() -> None:
@@ -34,3 +36,9 @@ class FasterWhisperTranscriber:
     def transcribe(self, audio: Path, lang: str) -> list[Segment]:
         segments, _ = self._pipe.transcribe(str(audio), language=lang, batch_size=self.batch_size)
         return [Segment(s.start, s.text.strip()) for s in segments]
+
+    def transcribe_clip(self, audio: Path, lang: str | None, prompt: str) -> tuple[list[Segment], str]:
+        """lang=None lets Whisper detect the language; returns segments and the language used."""
+        segments, info = self._pipe.transcribe(str(audio), language=lang, initial_prompt=prompt or None,
+                                               batch_size=self.batch_size)
+        return [Segment(s.start, s.text.strip(), s.avg_logprob < UNCLEAR_LOGPROB) for s in segments], info.language

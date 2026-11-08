@@ -2,7 +2,8 @@ import json
 import pathlib
 
 from brainsuck.models import Segment
-from brainsuck.transcript import choose_source, detect_lang, format_lines, parse_json3
+from brainsuck.transcript import (choose_source, detect_lang, format_lines, parse_json3, transcript_quality,
+                                  whisper_prompt)
 
 FIX = pathlib.Path(__file__).parent / "fixtures" / "captions"
 
@@ -48,3 +49,27 @@ def test_detect_lang_prefers_language_field():
 
 def test_detect_lang_default_en():
     assert detect_lang({}) == "en"
+
+
+def test_unclear_marker_on_line():
+    segs = [Segment(0, "a"), Segment(10, "b", low_conf=True), Segment(40, "c")]
+    assert format_lines(segs) == ["[00:00] a b ⟨ถอดไม่ชัด⟩", "[00:40] c"]
+
+
+def test_quality_share():
+    lines = ["[00:00] a ⟨ถอดไม่ชัด⟩", "[00:30] b", "[01:00] c", "[01:30] d"]
+    assert transcript_quality(lines) == 0.25
+    assert transcript_quality([]) == 0.0
+
+
+def test_prompt_strips_urls_and_hashtags():
+    got = whisper_prompt("How to Launch", "Y Combinator", "Kat Mañalac https://yc.com #startup tips")
+    assert got == "How to Launch. Y Combinator. Kat Mañalac tips"
+
+
+def test_prompt_capped_300():
+    assert len(whisper_prompt("t", "c", "ก" * 1000)) <= 300
+
+
+def test_prompt_skips_empty():
+    assert whisper_prompt("", "garyvee", "") == "garyvee"

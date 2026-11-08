@@ -14,6 +14,7 @@ Work down this ladder until the question is covered:
 1. `advisor.md` — which channel covers what, where channels agree and disagree.
 2. `channels/<folder>/topics.md`, `principles.md`, `evolution.md`, `glossary.md`.
 3. `grep` the `videos/*.md` files of the relevant channels for the dish, technique, or term (try the user's words and the channel's language). Read the `## Summary` of each hit, then the `## Transcript` lines around the cited timestamp to confirm the claim and lift a quote.
+4. `grep` `clips/*.md` (when the folder exists) — Clips the user added one by one with `/mini-brain --to`. They belong to no Channel, are not in `advisor.md`, and get no Recency Weighting; read them the same way as step 3 and present them under **จากช่อง** as "จากคลิปที่คุณเพิ่มไว้".
 
 **Channel Focus**: when the user names a channel ("@NicksKitchen", "ถาม Nick อย่างเดียว"), search only that channel's folder.
 
@@ -29,7 +30,7 @@ Answer in the user's language, with up to three labelled parts, in this order, e
 
 **ความรู้ทั่วไป (ไม่ได้มาจากช่อง)** (*General knowledge — not from the channel*) — anything else you add. Open this part with one line saying the channels in this Advisor don't cover it.
 
-**Citation** = `[<video title> @ mm:ss](https://youtu.be/<id>?t=<seconds>)`. A record with `status: removed` gets "(คลิปนี้ไม่อยู่บน YouTube แล้ว)" after its Citation.
+**Citation** = `[<video title> @ mm:ss](https://youtu.be/<id>?t=<seconds>)`. A record with `status: removed` gets "(คลิปนี้ไม่อยู่บน YouTube แล้ว)" after its Citation. A Clip from `clips/` uses its `display_name` as the title; a TikTok or Instagram Clip links to its `url` instead: `[<display_name> @ mm:ss](<url>)`. A claim resting on a transcript line ending with `⟨ถอดไม่ชัด⟩` gets "(ช่วงนี้ถอดเสียงไม่ชัด)"; one from a `transcript_source: nexlev-description` record gets "(จากคำบรรยายของ NexLev ไม่ใช่คำพูดจริง)".
 
 When the question is outside every channel, end with one line suggesting a channel could be added with `/brain-sucker:brain-suck <ช่อง>`.
 

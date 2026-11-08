@@ -76,6 +76,23 @@ def test_mark_removed():
     assert mark_removed(r) == replace(r, status="removed")
 
 
+def test_channel_record_has_no_clip_fields():
+    lines = render_record(make_record()).splitlines()
+    assert not any(l.startswith(("platform:", "display_name:", "copied_to:")) for l in lines)
+
+
+def test_clip_round_trip():
+    r = make_record(platform="tiktok", kind="short", display_name='ขายของให้คนรวย: Gary "V"', creator="garyvee",
+                    transcript_quality=0.25, copied_to=["C:\\x y\\ที่ปรึกษา ทดสอบ"],
+                    transcript_lines=["[00:00] hi ⟨ถอดไม่ชัด⟩"])
+    assert parse_record(render_record(r)) == r
+
+
+def test_clip_round_trip_unnamed():
+    r = make_record(platform="instagram", display_name=None, transcript_quality=None)
+    assert parse_record(render_record(r)) == r
+
+
 def test_description_with_heading_lines_round_trips():
     r = make_record(description="intro\n## Ingredients\n- beef\n## Transcript\nfake")
     assert parse_record(render_record(r)) == r

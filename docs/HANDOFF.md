@@ -65,3 +65,9 @@
 - ✅ ผู้ใช้อนุมัติ mini design (2026-11-08) → กำลังทำ prototype 4 ข้อ (ผล: docs/research/0003-mini-prototype.md)
 - ✅ prototype mini เสร็จ → docs/research/0003-mini-prototype.md (TikTok/IG ไม่ต้องล็อกอิน, 360p อ่านสไลด์ได้, Whisper 17× realtime, ต้องใส่ initial_prompt กันชื่อเฉพาะเพี้ยน) · ขั้นถัดไป: writing-plans สำหรับ mini
 - ✅ แผน mini เขียนแล้ว → `docs/superpowers/plans/2026-11-08-mini-brain.md` (8 tasks, ทำใน worktree `../brain-sucker-mini` branch `feat/mini` แตกจาก `feat/v1`) · ขั้นถัดไป: ผู้ใช้ review แผน + เลือกวิธี execute (Subagent-driven / Native)
+
+## 3. Mini Brain — กำลัง implement (2026-11-08)
+- worktree `C:\Users\Lenovo\OneDrive\Desktop\brain-sucker-mini` branch `feat/mini` · ledger `.superpowers/sdd/2026-11-08-mini-brain/progress.md` (ใน worktree) — Task 1–8 `complete` (143 tests) · final review ทำแล้ว แก้ข้อ Important แล้ว
+- เทส: `cd plugins/brain-sucker/cli && /c/brain-sucker-cache/venv-dev-mini/Scripts/python -W error -m pytest -q` · รันจริงต้องตั้ง `BRAINSUCK_CACHE=C:/brain-sucker-cache/mini`
+- E2E ผ่านครบ → `docs/research/0004-mini-e2e.md` · ทดสอบด้วย `claude --plugin-dir <worktree>/plugins/brain-sucker` + prepend `<worktree>/plugins/brain-sucker/bin` เข้า PATH (ไม่งั้นได้ brainsuck 0.1.0 ของ plugin ที่ติดตั้ง)
+- เหลือ: final review + finishing branch · หลัง merge ต้อง update plugin `brain-sucker` ที่ติดตั้งให้เป็น 0.2.0

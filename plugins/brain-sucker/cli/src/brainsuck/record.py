@@ -10,6 +10,7 @@ from brainsuck.models import VideoInfo, VideoRecord
 _FRONT = ["id", "channel_id", "title", "kind", "published", "duration", "url", "lang",
           "transcript_source", "status", "summary_status", "topics", "screen_frames"]
 _FRONT_KEY = {"summary_status": "summary"}
+_CLIP_FRONT = ["platform", "display_name", "creator", "transcript_quality", "copied_to"]
 
 
 def record_filename(r: VideoRecord) -> str:
@@ -32,6 +33,8 @@ def _unescape(text: str) -> str:
 def render_record(r: VideoRecord) -> str:
     front = {_FRONT_KEY.get(k, k): getattr(r, k) for k in _FRONT}
     front["published"] = r.published.isoformat()
+    if r.platform is not None:
+        front.update({k: getattr(r, k) for k in _CLIP_FRONT})
     parts = [
         "---\n" + yaml.safe_dump(front, allow_unicode=True, sort_keys=False) + "---",
         "## Summary\n" + r.summary_md.strip(),
@@ -63,6 +66,9 @@ def parse_record(text: str) -> VideoRecord:
     fields["published"] = date.fromisoformat(str(fields["published"]))
     fields["topics"] = list(fields["topics"] or [])
     fields["screen_frames"] = list(fields["screen_frames"] or [])
+    if "platform" in front:
+        fields.update({k: front.get(k) for k in _CLIP_FRONT})
+        fields["copied_to"] = list(fields["copied_to"] or [])
     return VideoRecord(
         **fields,
         summary_md=sec.get("Summary", "").strip(),

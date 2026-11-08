@@ -24,7 +24,23 @@ _Avoid_: channel name (ชื่อช่องเป็นแค่รูปแ
 
 **Video**:
 คลิปหนึ่งคลิปของ Channel มี Kind เป็น Long หรือ Short เท่านั้น
-_Avoid_: clip, episode, post
+_Avoid_: episode, post (ใช้ Clip สำหรับ Video ที่ผู้ใช้ส่ง URL มาเอง)
+
+**Clip**:
+Video ที่ผู้ใช้ส่ง URL มาเองผ่าน mini-brain ไม่ได้มาจากการ Ingest ทั้ง Channel มาจาก YouTube, Instagram หรือ TikTok
+_Avoid_: post, reel
+
+**Clip Library**:
+โฟลเดอร์กลางเดียวที่เก็บ Video Record ของทุก Clip (`Desktop\mini-brain`) เรียกใช้ได้จากทุกโฟลเดอร์
+_Avoid_: vault, inbox
+
+**Clip Key**:
+`<platform>_<id>` ตัวตนของ Clip
+_Avoid_: URL (URL หลายแบบชี้ Clip เดียวกันได้)
+
+**Display Name**:
+ชื่อที่ผู้ใช้ตั้งให้ Clip (Claude เสนอ) ใช้เป็นชื่อไฟล์และชื่อใน Citation โดยยังเก็บ title จริงไว้
+_Avoid_: nickname, label
 
 **Long / Short**:
 ประเภทของ Video: Long คือคลิปปกติ ส่วน Short คือ YouTube Shorts ไลฟ์ไม่นับเป็น Video ในระบบนี้
